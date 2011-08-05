@@ -35,7 +35,7 @@
     <artifactId>project-description-setter</artifactId>
     <packaging>hpi</packaging>
     <name>Project Description Setter</name>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.0</version>
     <description>Set the project description from a file in the workspace</description>
     <url>http://wiki.jenkins-ci.org/display/JENKINS/Project+Description+Setter+Plugin</url>
 
