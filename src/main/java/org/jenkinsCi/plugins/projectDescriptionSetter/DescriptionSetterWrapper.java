@@ -98,7 +98,8 @@ public class DescriptionSetterWrapper extends BuildWrapper implements MatrixAggr
         final String projectDescription = getContentsIfAvailable(build, listener, projectDescriptionFilename);
         if (projectDescription == null) return true;
         listener.getLogger().println(Messages.console_settingDescription(projectDescriptionFilename));
-        build.getProject().setDescription(expand(build, listener, projectDescription));
+        final String description = disableTokens ? projectDescription : expand(build, listener, projectDescription);
+        build.getProject().setDescription(description);
         return true;
     }
 
@@ -116,7 +117,6 @@ public class DescriptionSetterWrapper extends BuildWrapper implements MatrixAggr
     }
 
     private String expand(final AbstractBuild build, final BuildListener listener, final String template) {
-        if (disableTokens) return template;
         try {
             return TokenMacro.expand(build, listener, template);
         } catch (MacroEvaluationException mee) {
