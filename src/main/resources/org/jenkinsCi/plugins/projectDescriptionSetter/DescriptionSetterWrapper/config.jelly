@@ -29,6 +29,9 @@
         <f:textbox default="${descriptor.projectDescriptionFilename}"/>
     </f:entry>
     <f:advanced>
+        <f:entry title="${%disableTokens}" field="disableTokens">
+            <f:checkbox default="${descriptor.disableTokens}"/>
+        </f:entry>
         <f:entry title="${%charset}" field="charset">
             <f:select default="${descriptor.charset ?: descriptor.defaultCharset}"/>
         </f:entry>

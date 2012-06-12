@@ -25,8 +25,8 @@
 
 <j:jelly xmlns:j="jelly:core">
     <div>
-        <p>The name of the file relative to the workspace root</p>
-        <p>The contents of the file will have any tokens replaced and will then be used to set the description for the project.</p>
+        <p>The name of the file relative to the workspace root - <strong>Token Macro tokens will always be expanded</strong></p>
+        <p>The contents of the file will have any tokens replaced (unless Disable tokens is selected) and will then be used to set the description for the project.</p>
         <p><br/><br/><strong>Available tokens</strong></p>
         <help xmlns="/lib/token-macro"/>
     </div>

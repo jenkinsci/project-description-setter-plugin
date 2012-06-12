@@ -39,6 +39,7 @@ public class DescriptionSetterWrapperDescriptor extends BuildWrapperDescriptor {
 
     private String charset;
     private String projectDescriptionFilename;
+    private boolean disableTokens;
 
     public DescriptionSetterWrapperDescriptor() {
         super(DescriptionSetterWrapper.class);
@@ -59,6 +60,14 @@ public class DescriptionSetterWrapperDescriptor extends BuildWrapperDescriptor {
 
     public void setProjectDescriptionFilename(final String projectDescriptionFilename) {
         this.projectDescriptionFilename = projectDescriptionFilename;
+    }
+
+    public boolean isDisableTokens() {
+        return disableTokens;
+    }
+
+    public void setDisableTokens(boolean disableTokens) {
+        this.disableTokens = disableTokens;
     }
 
     public boolean configure(final StaplerRequest request, final JSONObject formData) {

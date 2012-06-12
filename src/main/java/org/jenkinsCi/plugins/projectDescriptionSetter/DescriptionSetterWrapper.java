@@ -51,11 +51,13 @@ public class DescriptionSetterWrapper extends BuildWrapper implements MatrixAggr
 
     final Charset charset;
     final String projectDescriptionFilename;
+    final boolean disableTokens;
 
     @DataBoundConstructor
-    public DescriptionSetterWrapper(final String charset, final String projectDescriptionFilename) {
+    public DescriptionSetterWrapper(final String charset, final String projectDescriptionFilename, final boolean disableTokens) {
         this.charset = Charset.forName(charset);
         this.projectDescriptionFilename = projectDescriptionFilename;
+        this.disableTokens = disableTokens;
     }
 
     public String getCharset() {
@@ -64,6 +66,10 @@ public class DescriptionSetterWrapper extends BuildWrapper implements MatrixAggr
 
     public String getProjectDescriptionFilename() {
         return projectDescriptionFilename;
+    }
+
+    public boolean isDisableTokens() {
+        return disableTokens;
     }
 
     @Override
@@ -110,6 +116,7 @@ public class DescriptionSetterWrapper extends BuildWrapper implements MatrixAggr
     }
 
     private String expand(final AbstractBuild build, final BuildListener listener, final String template) {
+        if (disableTokens) return template;
         try {
             return TokenMacro.expand(build, listener, template);
         } catch (MacroEvaluationException mee) {
