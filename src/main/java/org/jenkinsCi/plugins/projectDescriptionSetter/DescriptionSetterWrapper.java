@@ -118,7 +118,7 @@ public class DescriptionSetterWrapper extends BuildWrapper implements MatrixAggr
 
     private String expand(final AbstractBuild build, final BuildListener listener, final String template) {
         try {
-            return TokenMacro.expand(build, listener, template);
+            return TokenMacro.expandAll(build, listener, template);
         } catch (MacroEvaluationException mee) {
             throw new RuntimeException(mee);
         } catch (IOException ioe) {
