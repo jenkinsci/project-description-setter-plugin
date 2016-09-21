@@ -54,7 +54,7 @@ public class DescriptionSetterWrapper extends BuildWrapper implements MatrixAggr
     final boolean disableTokens;
 
     @DataBoundConstructor
-    public DescriptionSetterWrapper(String charset, String projectDescriptionFilename, boolean disableTokens) {
+    public DescriptionSetterWrapper(final String charset, final String projectDescriptionFilename, final boolean disableTokens) {
         this.charset = Charset.forName(charset);
         this.projectDescriptionFilename = projectDescriptionFilename;
         this.disableTokens = disableTokens;
