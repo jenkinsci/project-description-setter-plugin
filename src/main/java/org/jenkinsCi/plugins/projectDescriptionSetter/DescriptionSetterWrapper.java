@@ -162,7 +162,12 @@ public class DescriptionSetterWrapper extends BuildWrapper implements MatrixAggr
 
     @Override
     public DescriptionSetterWrapperDescriptor getDescriptor() {
-        return Hudson.getInstance().getDescriptorByType(DescriptionSetterWrapperDescriptor.class);
+        Hudson h = Hudson.getInstance();
+        if (h != null) {
+          return h.getDescriptorByType(DescriptionSetterWrapperDescriptor.class);
+        } else {
+          return null;
+        }
     }
 
 }
