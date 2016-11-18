@@ -134,7 +134,8 @@ public class DescriptionSetterWrapper extends BuildWrapper implements MatrixAggr
         }
     }
 
-    private String readFile(final FilePath projectDescriptionFile) {
+    private String readFile(final FilePath projectDescriptionFile)
+                                                              throws InterruptedException {
         InputStream in = null;
         InputStreamReader reader = null;
         StringWriter writer = null;
@@ -148,11 +149,6 @@ public class DescriptionSetterWrapper extends BuildWrapper implements MatrixAggr
             IOUtils.closeQuietly(in);
             IOUtils.closeQuietly(writer);
             throw new RuntimeException(ioe);
-        } catch (InterruptedException ie) {
-            IOUtils.closeQuietly(reader);
-            IOUtils.closeQuietly(in);
-            IOUtils.closeQuietly(writer);
-            throw new RuntimeException(ie);
         } finally {
             IOUtils.closeQuietly(reader);
             IOUtils.closeQuietly(writer);
