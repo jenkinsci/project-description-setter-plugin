@@ -146,7 +146,7 @@ public class DescriptionSetterWrapper extends BuildWrapper implements MatrixAggr
             reader = new InputStreamReader(new BufferedInputStream(in), Charset.forName(charsetName));
             writer = new StringWriter();
             IOUtils.copy(reader, writer);
-        } catch (IOException ioe) {
+        } catch (IOException | InterruptedException ioe) {
             IOUtils.closeQuietly(reader);
             IOUtils.closeQuietly(in);
             IOUtils.closeQuietly(writer);
