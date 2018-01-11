@@ -49,19 +49,21 @@ import java.nio.charset.Charset;
 
 public class DescriptionSetterWrapper extends BuildWrapper implements MatrixAggregatable {
 
-    final Charset charset;
+    @Deprecated
+    transient Charset charset;
+    String charsetName;
     final String projectDescriptionFilename;
     final boolean disableTokens;
 
     @DataBoundConstructor
     public DescriptionSetterWrapper(final String charset, final String projectDescriptionFilename, final boolean disableTokens) {
-        this.charset = Charset.forName(charset);
+        this.charsetName = charset;
         this.projectDescriptionFilename = projectDescriptionFilename;
         this.disableTokens = disableTokens;
     }
 
     public String getCharset() {
-        return charset.displayName();
+        return charsetName;
     }
 
     public String getProjectDescriptionFilename() {
@@ -70,6 +72,13 @@ public class DescriptionSetterWrapper extends BuildWrapper implements MatrixAggr
 
     public boolean isDisableTokens() {
         return disableTokens;
+    }
+
+    private Object readResolve() {
+        if (charset != null) {
+            charsetName = charset.name();
+        }
+        return this;
     }
 
     @Override
@@ -134,7 +143,7 @@ public class DescriptionSetterWrapper extends BuildWrapper implements MatrixAggr
         StringWriter writer = null;
         try {
             in = projectDescriptionFile.read();
-            reader = new InputStreamReader(new BufferedInputStream(in), charset);
+            reader = new InputStreamReader(new BufferedInputStream(in), Charset.forName(charsetName));
             writer = new StringWriter();
             IOUtils.copy(reader, writer);
         } catch (IOException ioe) {
