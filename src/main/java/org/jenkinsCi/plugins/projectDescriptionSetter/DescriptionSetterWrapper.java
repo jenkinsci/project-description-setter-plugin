@@ -33,7 +33,6 @@ import hudson.matrix.MatrixBuild;
 import hudson.matrix.MatrixRun;
 import hudson.model.AbstractBuild;
 import hudson.model.BuildListener;
-import hudson.model.Hudson;
 import hudson.tasks.BuildWrapper;
 import org.apache.commons.io.IOUtils;
 import org.jenkinsci.plugins.tokenmacro.MacroEvaluationException;
@@ -46,6 +45,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.StringWriter;
 import java.nio.charset.Charset;
+import jenkins.model.Jenkins;
 
 public class DescriptionSetterWrapper extends BuildWrapper implements MatrixAggregatable {
 
@@ -117,7 +117,11 @@ public class DescriptionSetterWrapper extends BuildWrapper implements MatrixAggr
         final String trimmed = Util.fixEmptyAndTrim(fileName);
         if (trimmed == null) return null;
         final String expandedFilename = expand(build, listener, fileName);
-        final FilePath projectDescriptionFile = build.getWorkspace().child(expandedFilename);
+        FilePath workspace = build.getWorkspace();
+        if (workspace == null) {
+            return null;
+        }
+        final FilePath projectDescriptionFile = workspace.child(expandedFilename);
         if (!projectDescriptionFile.exists()) {
             listener.getLogger().println(Messages.console_noFile(expandedFilename));
             return null;
@@ -160,7 +164,7 @@ public class DescriptionSetterWrapper extends BuildWrapper implements MatrixAggr
 
     @Override
     public DescriptionSetterWrapperDescriptor getDescriptor() {
-        return Hudson.getInstance().getDescriptorByType(DescriptionSetterWrapperDescriptor.class);
+        return Jenkins.getActiveInstance().getDescriptorByType(DescriptionSetterWrapperDescriptor.class);
     }
 
 }
