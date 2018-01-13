@@ -33,7 +33,6 @@ import hudson.matrix.MatrixBuild;
 import hudson.matrix.MatrixRun;
 import hudson.model.AbstractBuild;
 import hudson.model.BuildListener;
-import hudson.model.Hudson;
 import hudson.tasks.BuildWrapper;
 import org.apache.commons.io.IOUtils;
 import org.jenkinsci.plugins.tokenmacro.MacroEvaluationException;
@@ -46,22 +45,25 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.StringWriter;
 import java.nio.charset.Charset;
+import jenkins.model.Jenkins;
 
 public class DescriptionSetterWrapper extends BuildWrapper implements MatrixAggregatable {
 
-    final Charset charset;
+    @Deprecated
+    transient Charset charset;
+    String charsetName;
     final String projectDescriptionFilename;
     final boolean disableTokens;
 
     @DataBoundConstructor
     public DescriptionSetterWrapper(final String charset, final String projectDescriptionFilename, final boolean disableTokens) {
-        this.charset = Charset.forName(charset);
+        this.charsetName = charset;
         this.projectDescriptionFilename = projectDescriptionFilename;
         this.disableTokens = disableTokens;
     }
 
     public String getCharset() {
-        return charset.displayName();
+        return charsetName;
     }
 
     public String getProjectDescriptionFilename() {
@@ -70,6 +72,13 @@ public class DescriptionSetterWrapper extends BuildWrapper implements MatrixAggr
 
     public boolean isDisableTokens() {
         return disableTokens;
+    }
+
+    private Object readResolve() {
+        if (charset != null) {
+            charsetName = charset.name();
+        }
+        return this;
     }
 
     @Override
@@ -108,7 +117,11 @@ public class DescriptionSetterWrapper extends BuildWrapper implements MatrixAggr
         final String trimmed = Util.fixEmptyAndTrim(fileName);
         if (trimmed == null) return null;
         final String expandedFilename = expand(build, listener, fileName);
-        final FilePath projectDescriptionFile = build.getWorkspace().child(expandedFilename);
+        FilePath workspace = build.getWorkspace();
+        if (workspace == null) {
+            return null;
+        }
+        final FilePath projectDescriptionFile = workspace.child(expandedFilename);
         if (!projectDescriptionFile.exists()) {
             listener.getLogger().println(Messages.console_noFile(expandedFilename));
             return null;
@@ -134,10 +147,10 @@ public class DescriptionSetterWrapper extends BuildWrapper implements MatrixAggr
         StringWriter writer = null;
         try {
             in = projectDescriptionFile.read();
-            reader = new InputStreamReader(new BufferedInputStream(in), charset);
+            reader = new InputStreamReader(new BufferedInputStream(in), Charset.forName(charsetName));
             writer = new StringWriter();
             IOUtils.copy(reader, writer);
-        } catch (IOException ioe) {
+        } catch (IOException | InterruptedException ioe) {
             IOUtils.closeQuietly(reader);
             IOUtils.closeQuietly(in);
             IOUtils.closeQuietly(writer);
@@ -151,7 +164,7 @@ public class DescriptionSetterWrapper extends BuildWrapper implements MatrixAggr
 
     @Override
     public DescriptionSetterWrapperDescriptor getDescriptor() {
-        return Hudson.getInstance().getDescriptorByType(DescriptionSetterWrapperDescriptor.class);
+        return Jenkins.getActiveInstance().getDescriptorByType(DescriptionSetterWrapperDescriptor.class);
     }
 
 }
