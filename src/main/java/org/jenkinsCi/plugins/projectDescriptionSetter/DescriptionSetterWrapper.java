@@ -167,16 +167,12 @@ public class DescriptionSetterWrapper extends BuildWrapper implements MatrixAggr
 
     @Override
     public DescriptionSetterWrapperDescriptor getDescriptor() {
-<<<<<<< HEAD
         Hudson h = Hudson.getInstance();
         if (h != null) {
           return h.getDescriptorByType(DescriptionSetterWrapperDescriptor.class);
         } else {
           return null;
         }
-=======
-        return Jenkins.getActiveInstance().getDescriptorByType(DescriptionSetterWrapperDescriptor.class);
->>>>>>> 149488eb640c0dd78dfc62c85c9174a00e2cfe8a
     }
 
 }
