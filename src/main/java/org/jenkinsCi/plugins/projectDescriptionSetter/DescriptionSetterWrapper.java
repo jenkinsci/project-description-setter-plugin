@@ -117,16 +117,18 @@ public class DescriptionSetterWrapper extends BuildWrapper implements MatrixAggr
         final String trimmed = Util.fixEmptyAndTrim(fileName);
         if (trimmed == null) return null;
         final String expandedFilename = expand(build, listener, fileName);
-        FilePath workspace = build.getWorkspace();
-        if (workspace == null) {
-            return null;
-        }
-        final FilePath projectDescriptionFile = workspace.child(expandedFilename);
-        if (!projectDescriptionFile.exists()) {
+        final FilePath workspace = build.getWorkspace();
+        if (workspace != null) {
+          final FilePath projectDescriptionFile = workspace.child(expandedFilename);
+          if (projectDescriptionFile.exists()) {
+            return readFile(projectDescriptionFile);
+          } else {
             listener.getLogger().println(Messages.console_noFile(expandedFilename));
-            return null;
+          }
+        } else {
+          listener.getLogger().println(Messages.console_noWorkspace());
         }
-        return readFile(projectDescriptionFile);
+        return null;
     }
 
     private String expand(final AbstractBuild build, final BuildListener listener, final String template) {
@@ -141,7 +143,8 @@ public class DescriptionSetterWrapper extends BuildWrapper implements MatrixAggr
         }
     }
 
-    private String readFile(final FilePath projectDescriptionFile) {
+    private String readFile(final FilePath projectDescriptionFile)
+                                                              throws InterruptedException {
         InputStream in = null;
         InputStreamReader reader = null;
         StringWriter writer = null;
