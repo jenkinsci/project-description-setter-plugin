@@ -33,7 +33,6 @@ import hudson.matrix.MatrixBuild;
 import hudson.matrix.MatrixRun;
 import hudson.model.AbstractBuild;
 import hudson.model.BuildListener;
-import hudson.model.Hudson;
 import hudson.tasks.BuildWrapper;
 import org.apache.commons.io.IOUtils;
 import org.jenkinsci.plugins.tokenmacro.MacroEvaluationException;
@@ -168,12 +167,7 @@ public class DescriptionSetterWrapper extends BuildWrapper implements MatrixAggr
 
     @Override
     public DescriptionSetterWrapperDescriptor getDescriptor() {
-        Hudson h = Hudson.getInstance();
-        if (h != null) {
-          return h.getDescriptorByType(DescriptionSetterWrapperDescriptor.class);
-        } else {
-          return null;
-        }
+        return Jenkins.getActiveInstance().getDescriptorByType(DescriptionSetterWrapperDescriptor.class);
     }
 
 }
